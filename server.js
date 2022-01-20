@@ -13,7 +13,7 @@ app.use(express.json());
 // without need of creating seperate server endpoint
 // Every time we create a server that will serve a front end as well as JSON data, we'll always want to use this middleware.
 app.use(express.static("public"));
-app.use("/", apiRoutes);
+app.use("/api", apiRoutes);
 app.use("/", htmlRoutes);
 
 app.listen(PORT, () => {

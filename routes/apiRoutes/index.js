@@ -1,30 +1,68 @@
 const fs = require("fs");
 const path = require("path");
 const router = require("express").Router();
+const uuid = require("uuid");
 const database = require("../../db/db");
 
-router.get("/api/notes", (req, res) => {
-  res.json(database);
-});
-
-router.post("/api/notes", (req, res) => {
-  let jsonFilePath = path.join(__dirname, "../../db/db.json");
-  let newNote = req.body;
-  console.log(jsonFilePath);
-
-  database.push(newNote);
-
-  // Write the db.json file again.
-  fs.writeFile(jsonFilePath, JSON.stringify(database), function (err) {
+// function to write/overwrite db.json
+function writeToDatabase(notes) {
+  // Converts new JSON Array back to string
+  notes = JSON.stringify(notes);
+  console.log(notes);
+  // Writes String back to db.json
+  fs.writeFileSync("./db/db.json", notes, function (err) {
     if (err) {
       return console.log(err);
     }
-    console.log("Your note was saved!");
   });
-  // Gives back the response, which is the user's new note.
-  res.json(newNote);
+}
+
+// GET(READ) notes from db.json
+router.get("/notes", (req, res) => {
+  res.json(database);
 });
 
-// router.delete("/api/notes", (req, res) => {});
+// POST (CREATE) notes
+router.post("/notes", (req, res) => {
+  // Set unique id to entry
+  if (database.length == 0) {
+    req.body.id = uuid.v4();
+  }
+
+  console.log("req.body.id: " + req.body.id);
+
+  // Pushes Body to JSON Array
+  database.push(req.body);
+
+  // Write notes data to database
+  writeToDatabase(database);
+  // console.log(database);
+
+  // returns new note in JSON format.
+  res.json(req.body);
+});
+
+// DELETE Method to delete note with specified ID
+router.delete("/notes/:id", (req, res) => {
+  // Obtains id and converts to a string
+  let id = req.params.id.toString();
+  console.log(id);
+
+  // Goes through notesArray searching for matching ID
+  for (i = 0; i < database.length; i++) {
+    if (database[i].id == id) {
+      console.log("match!");
+      // responds with deleted note
+      res.send(database[i]);
+
+      // Removes the deleted note
+      database.splice(i, 1);
+      break;
+    }
+  }
+
+  // Write notes data to database
+  writeToDatabase(database);
+});
 
 module.exports = router;
