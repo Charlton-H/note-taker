@@ -4,7 +4,7 @@ const router = require("express").Router();
 const uuid = require("uuid");
 const database = require("../../db/db");
 
-// function to write/overwrite db.json
+// function to write to db.json
 function writeToDatabase(notes) {
   // Converts new JSON Array back to string
   notes = JSON.stringify(notes);
@@ -42,7 +42,7 @@ router.post("/notes", (req, res) => {
   res.json(req.body);
 });
 
-// DELETE Method to delete note with specified ID
+// DELETE note with unqiue ID
 router.delete("/notes/:id", (req, res) => {
   // Obtains id and converts to a string
   let id = req.params.id.toString();
