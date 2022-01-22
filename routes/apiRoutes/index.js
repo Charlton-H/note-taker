@@ -24,11 +24,8 @@ router.get("/notes", (req, res) => {
 
 // POST (CREATE) notes
 router.post("/notes", (req, res) => {
-  // Set unique id to entry
-  if (database.length == 0) {
-    req.body.id = uuid.v4();
-  }
-
+  // Add and set unique id to req
+  req.body.id = uuid.v4();
   console.log("req.body.id: " + req.body.id);
 
   // Pushes Body to JSON Array
@@ -48,7 +45,7 @@ router.delete("/notes/:id", (req, res) => {
   let id = req.params.id.toString();
   console.log(id);
 
-  // Goes through notesArray searching for matching ID
+  // Goes through db array searching for matching ID
   for (i = 0; i < database.length; i++) {
     if (database[i].id == id) {
       console.log("match!");
