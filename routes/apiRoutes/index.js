@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const router = require("express").Router();
 const uuid = require("uuid");
 const database = require("../../db/db");
